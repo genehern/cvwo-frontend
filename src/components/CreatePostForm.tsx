@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, Paper, Typography } from "@mui/material";
-import axios from "axios";
+import { createPost } from "../utils/api";
 
 const CreateTextPost: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -8,32 +8,10 @@ const CreateTextPost: React.FC = () => {
   const [secondaryTag, setSecondaryTag] = useState("");
   const [content, setContent] = useState("");
 
-  const backendUrl: string | undefined = process.env.REACT_APP_BACKEND_URL;
-  const apiLink: string = backendUrl + "/protected/post/createPost";
-
-  const handleSubmit = async () => {
-    // Post submission logic here
-    try {
-      console.log({ title: title, content: content });
-      await axios.post(
-        apiLink,
-        {
-          title: title,
-          content: content,
-          primary_tag: primaryTag,
-          secondary_tag: secondaryTag,
-        },
-        { withCredentials: true }
-      );
-    } catch {
-      alert("Error posting, check your connection again.");
-    }
-  };
-
   return (
     <Paper
       elevation={3}
-      sx={{ padding: 3, maxWidth: 600, margin: "auto", marginTop: 5 }}
+      sx={{ padding: 3, maxWidth: 600, margin: "auto", marginTop: 12 }}
     >
       <Typography variant="h5" gutterBottom>
         Create Post
@@ -84,7 +62,7 @@ const CreateTextPost: React.FC = () => {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={handleSubmit}
+        onClick={createPost(title, content, primaryTag, secondaryTag)}
         disabled={!title || !content || !primaryTag || !secondaryTag} // Disable button if title or content is empty
       >
         Post

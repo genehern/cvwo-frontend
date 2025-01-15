@@ -3,7 +3,7 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { SignInPage } from "@toolpad/core/SignInPage";
 import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../utils/AuthContext";
-
+import Navbar from "../components/Navbar";
 interface Provider {
   id: string;
   name: string;
@@ -20,6 +20,7 @@ export default function Signup() {
 
   return (
     <AppProvider theme={theme}>
+      <Navbar />
       <SignInPage
         signIn={() => signUp({ username, password })}
         providers={providers}

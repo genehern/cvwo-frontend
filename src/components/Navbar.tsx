@@ -14,6 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
+import { useAuth } from "../utils/AuthContext";
 
 // Reusable SearchBar Component
 const SearchBar = () => {
@@ -73,35 +74,42 @@ const SearchBar = () => {
 const DesktopMenu = ({
   handleProfileMenuOpen,
   menuId,
+  user,
 }: {
   handleProfileMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
   menuId: string;
+  user: string | null;
 }) => (
   <Box sx={{ display: { xs: "none", md: "flex" } }}>
-    <IconButton
-      size="large"
-      aria-label="show 17 new notifications"
-      color="inherit"
-    >
-      <Chip
-        icon={<AddIcon />}
-        label="Create Post"
-        component={Link}
-        to="/createPost"
-        clickable
-        sx={{
-          backgroundColor: "#FFFFFF",
-          color: "#000000",
-          border: "1px solid #ccc",
-          "& .MuiChip-icon": {
+    {user === null ? (
+      <></>
+    ) : (
+      <IconButton
+        size="large"
+        aria-label="show 17 new notifications"
+        color="inherit"
+      >
+        <Chip
+          icon={<AddIcon />}
+          label="Create Post"
+          component={Link}
+          to="/createPost"
+          clickable
+          sx={{
+            backgroundColor: "#FFFFFF",
             color: "#000000",
-          },
-          "&:hover": {
-            backgroundColor: "#f0f0f0",
-          },
-        }}
-      />
-    </IconButton>
+            border: "1px solid #ccc",
+            "& .MuiChip-icon": {
+              color: "#000000",
+            },
+            "&:hover": {
+              backgroundColor: "#f0f0f0",
+            },
+          }}
+        />
+      </IconButton>
+    )}
+
     <IconButton
       size="large"
       edge="end"
@@ -129,24 +137,40 @@ export default function Navbar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const { user, logOut } = useAuth();
 
-  const menuId = "primary-search-account-menu";
+  const menuId = "basic-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }} // Attach below the button
+      transformOrigin={{ vertical: "top", horizontal: "center" }}
+      id={"basic-menu"}
       keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} component={Link} to="/login">
-        Login
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose} component={Link} to="/signup">
-        Signup
-      </MenuItem>
+      {user === null ? (
+        <>
+          {" "}
+          <MenuItem onClick={handleMenuClose} component={Link} to="/login">
+            Login
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/signup">
+            Signup
+          </MenuItem>{" "}
+        </>
+      ) : (
+        <>
+          <MenuItem>{user}</MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/login">
+            My Posts
+          </MenuItem>
+          <MenuItem onClick={logOut} component={Link} to="/">
+            Logout
+          </MenuItem>
+        </>
+      )}
     </Menu>
   );
 
@@ -154,28 +178,22 @@ export default function Navbar() {
     <Box sx={{ width: "100%" }}>
       <AppBar position="fixed">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            MUI
+            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+              Home
+            </Link>
           </Typography>
           <SearchBar />
           <Box sx={{ flexGrow: 1 }} />
           <DesktopMenu
             handleProfileMenuOpen={handleProfileMenuOpen}
             menuId={menuId}
+            user={user}
           />
         </Toolbar>
       </AppBar>
