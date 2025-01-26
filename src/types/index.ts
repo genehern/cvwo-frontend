@@ -1,11 +1,29 @@
+export interface CommentI {
+  id: number;
+  postId: number;
+  userId: number;
+  parentCommentId: number | null; // Use `null` for optional/pointer fields
+  content: string;
+  createdAt: Date;
+  username: string;
+  replies: CommentI[]; // Recursive type for nested comments
+  isUpvoted: boolean;
+  isDownvoted: boolean;
+  upvotes: number;
+  downvotes: number;
+}
+
 export interface postCardDataI {
   id: number;
-  title: string;
-  primary_tag: string;
-  secondary_tag: string;
-  content: string;
+  userId: number;
   username: string;
-  date: string;
-  upvote: number;
-  downvote: number;
+  title: string;
+  content: string;
+  createdAt: Date;
+  primaryTag: string;
+  isUpvoted: boolean;
+  isDownvoted: boolean;
+  comments: CommentI[]; // Array of CommentDTO
+  upvotes: number;
+  downvotes: number;
 }

@@ -1,12 +1,25 @@
 import React, { useState } from "react";
 import { TextField, Button, Paper, Typography } from "@mui/material";
 import { createPost } from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const CreateTextPost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [primaryTag, setPrimaryTag] = useState("");
   const [secondaryTag, setSecondaryTag] = useState("");
   const [content, setContent] = useState("");
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    try {
+      await createPost(title, content, primaryTag, secondaryTag);
+      //navigate("/");
+
+      window.alert("Posted Succesfully");
+    } catch {
+      window.alert("Failed to post");
+    }
+  };
 
   return (
     <Paper
@@ -62,7 +75,7 @@ const CreateTextPost: React.FC = () => {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={createPost(title, content, primaryTag, secondaryTag)}
+        onClick={handleClick}
         disabled={!title || !content || !primaryTag || !secondaryTag} // Disable button if title or content is empty
       >
         Post

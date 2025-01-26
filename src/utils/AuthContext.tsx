@@ -34,6 +34,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await axios.post(apiLink, credentials);
 
       console.log("Sign-in successful:", response.data);
+
+      Cookies.set("jwt", response.data, { expires: 7 });
       navigate("/");
       setUser(credentials.username);
     } catch (error: any) {

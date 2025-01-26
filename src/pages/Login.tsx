@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
 import Navbar from "../components/Navbar";
 
-// 1️⃣ Define provider type
 interface Provider {
   id: string;
   name: string;
@@ -17,19 +16,11 @@ const providers: Provider[] = [{ id: "credentials", name: "Credentials" }];
 export default function Login() {
   const theme: Theme = useTheme();
 
-  // 2️⃣ Add types to state
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  // 3️⃣ Type the loginAction function
   const { loginAction } = useAuth();
 
-  // 4️⃣ Type the signIn function
-  const handleSignIn = () => {
-    loginAction({ username, password });
-  };
-
-  // 5️⃣ Type the input event handlers
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
@@ -43,7 +34,9 @@ export default function Login() {
       <Navbar />
       <AppProvider theme={theme}>
         <SignInPage
-          signIn={handleSignIn}
+          signIn={() => {
+            loginAction({ username, password });
+          }}
           providers={providers}
           slotProps={{
             emailField: {
