@@ -4,6 +4,7 @@ import { SignInPage } from "@toolpad/core/SignInPage";
 import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../utils/AuthContext";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 interface Provider {
   id: string;
   name: string;
@@ -22,6 +23,7 @@ export default function Signup() {
     <AppProvider theme={theme}>
       <Navbar />
       <SignInPage
+        // @ts-ignore
         signIn={() => signUp({ username, password })}
         providers={providers}
         slots={{
@@ -35,19 +37,35 @@ export default function Signup() {
         slotProps={{
           emailField: {
             type: "text",
-            label: "Username", // Change label to "Username"
+            label: "Username",
+            placeholder: "Username",
+            onFocus: () => {
+              "lol";
+            },
             onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
               setUsername(event.target.value), // Set username input
           },
           submitButton: {
-            children: "Sign Up",
+            // @ts-ignore
+            component: (props: any) => <button {...props}>Sign Up</button>,
           },
           passwordField: {
             onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(event.target.value), // Set password input
+            placeholder: "********",
           },
           rememberMe: {
-            control: <></>,
+            control: (
+              <span>
+                Have an account?{" "}
+                <Link
+                  to="/login"
+                  style={{ color: "#1976d2", textDecoration: "none" }}
+                >
+                  Login here
+                </Link>
+              </span>
+            ),
             label: "",
           },
         }}

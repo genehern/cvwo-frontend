@@ -10,7 +10,6 @@ import InputBase from "@mui/material/InputBase";
 import { Chip } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
@@ -137,8 +136,8 @@ export default function Navbar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const { user, logOut } = useAuth();
-
+  const { logOut } = useAuth();
+  const user = localStorage.getItem("username");
   const menuId = "basic-menu";
   const renderMenu = (
     <Menu

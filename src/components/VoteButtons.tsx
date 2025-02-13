@@ -67,9 +67,16 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
   const [state, dispatch] = useReducer(voteReducer, initialState);
 
   const handleUpvote = (postOrComment: string) => {
+    if (isUpvote) {
+      return;
+    }
+    if (localStorage.getItem("username") == null) {
+      alert("Log in to upvote!");
+      return;
+    }
     try {
       if (postOrComment === "post") {
-        postPostVote(id, true);
+        postPostVote(id);
       } else {
         postCommentVote(id, false);
       }
@@ -81,8 +88,15 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
 
   const handleDownvote = (postOrComment: string) => {
     try {
+      if (isDownVote) {
+        return;
+      }
+      if (localStorage.getItem("username") == null) {
+        alert("Log in to upvote!");
+        return;
+      }
       if (postOrComment === "post") {
-        postPostVote(id, true);
+        postPostVote(id);
       } else {
         postCommentVote(id, false);
       }

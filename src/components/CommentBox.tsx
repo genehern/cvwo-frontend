@@ -47,7 +47,7 @@ function CommentBox({
                   setInputValue("");
                   window.alert("success");
                 }}
-                endIcon={<SendIcon />}
+                endIcon={<></>}
               >
                 Comment
               </Button>

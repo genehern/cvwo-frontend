@@ -1,5 +1,5 @@
 import axios from "axios";
-import { postCardDataI } from "../types";
+import { CommentI, postCardDataI } from "../types";
 import { QueryFunctionContext } from "@tanstack/react-query";
 import camelcaseKeys from "camelcase-keys";
 
@@ -31,7 +31,6 @@ export const createPost = async (
   secondaryTag: string
 ) => {
   const apiLink: string = "/protected/posts";
-  console.log("bnb");
   try {
     await apiClient.post(apiLink, {
       title: title,
@@ -86,10 +85,14 @@ export const postComment = async (
   }
 };
 
-export const postPostVote = async (postId: number, upvote: boolean) => {
-  const apiLink: string = `protected/posts/upvote`;
+export const postPostVote = async (postId: number) => {
+  const apiLink: string = `protected/votes/postVote`;
   try {
-    await apiClient.post(apiLink);
+    await apiClient.post(apiLink, {
+      post_id: postId,
+      upvote: true,
+      downvote: false,
+    });
   } catch (error) {
     throw new Error("Failed to fetch posts.");
   }
@@ -99,6 +102,31 @@ export const postCommentVote = async (commentId: number, upvote: boolean) => {
   const apiLink: string = `protected/posts/upvote`;
   try {
     await apiClient.post(apiLink);
+  } catch (error) {
+    throw new Error("Failed to fetch posts.");
+  }
+};
+
+export const getComments = async (
+  context: QueryFunctionContext<string[], number>
+): Promise<{
+  data: CommentI[];
+  currentPage: number;
+  nextPage: number | null;
+}> => {
+  const LIMIT = 10;
+  const pageParam = context.pageParam ?? 1;
+  const apiLink: string = `/public/posts?pageNum=${pageParam}&limitNum=${LIMIT}`;
+
+  try {
+    const res = await apiClient.get(apiLink);
+    const comments: CommentI[] = res.data;
+
+    return {
+      data: comments,
+      currentPage: pageParam,
+      nextPage: comments.length === LIMIT ? pageParam + 1 : null,
+    };
   } catch (error) {
     throw new Error("Failed to fetch posts.");
   }

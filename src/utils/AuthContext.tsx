@@ -1,9 +1,7 @@
-import { useContext, createContext, useState, ReactNode } from "react";
+import { useContext, createContext, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Cookies from "js-cookie";
 interface AuthContextType {
-  user: string | null;
   loginAction: (data: credentials) => Promise<void>;
   signUp: (data: credentials) => Promise<void>;
   logOut: () => void;
@@ -22,24 +20,19 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const backendUrl: string | undefined = process.env.REACT_APP_BACKEND_URL;
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const loginAction = async (credentials: {
     username: string;
     password: string;
   }): Promise<void> => {
-    const apiLink = `${backendUrl}/public/user/login`;
+    const apiLink: string = `${backendUrl}/public/user/login`;
     try {
-      const response = await axios.post(apiLink, credentials);
-
-      console.log("Sign-in successful:", response.data);
-
-      Cookies.set("jwt", response.data, { expires: 7 });
+      await axios.post(apiLink, credentials);
+      localStorage.setItem("username", credentials.username);
+      alert("Logged in successfuly");
       navigate("/");
-      setUser(credentials.username);
     } catch (error: any) {
-      console.error("Error during sign-in:", error);
+      alert(error.message);
     }
   };
 
@@ -50,22 +43,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const apiLink: string = `${backendUrl}/public/user/createUser`;
     try {
       await axios.post(apiLink, credentials);
-      setUser(credentials.username);
+      localStorage.setItem("username", credentials.username);
+      //Cookies.set("jwt", response.data, {expires: 7});
+      alert("User created successfully");
       navigate("/");
     } catch (error: any) {
-      console.error("Error during sign-up:", error);
+      alert(error.messsage);
     }
   };
 
-  const logOut = (): void => {
-    setUser(null);
+  const logOut = async (): Promise<void> => {
     //remove cookie
-    Cookies.remove("jwt");
+    try {
+      const apiLink: string = `${backendUrl}/public/user/logout`;
+      await axios.post(apiLink);
+      localStorage.removeItem("username");
+    } catch (error: any) {
+      alert(error.messsage);
+    }
+
     navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginAction, logOut, signUp }}>
+    <AuthContext.Provider value={{ loginAction, logOut, signUp }}>
       {children}
     </AuthContext.Provider>
   );

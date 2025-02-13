@@ -1,42 +1,75 @@
-import Comment from "../components/Comment";
-import React from "react";
 import Navbar from "../components/Navbar";
-import PostCard from "../components/PostCard";
-function PostWithComment() {
-  const exampleComment = {
-    id: 1,
-    postId: 123,
-    userId: 456,
-    parentCommentId: null,
-    content: "This is a great post!",
-    createdAt: new Date(),
-    username: "john_doe",
-    replies: [
-      {
-        id: 2,
-        postId: 123,
-        userId: 789,
-        parentCommentId: 1,
-        content: "Thanks! I appreciate it.",
-        createdAt: new Date(),
-        username: "jane_doe",
-        replies: [],
-        isUpvoted: false,
-        isDownvoted: false,
-        upvotes: 0,
-        downvotes: 0,
-      },
-    ],
-    isUpvoted: false,
-    isDownvoted: false,
-    upvotes: 5,
-    downvotes: 1,
-  };
-  return (
-    <div>
-      <Comment {...exampleComment} />
-    </div>
+import Comment from "../components/Comment";
+import { Box, CircularProgress } from "@mui/material";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getComments } from "../utils/api";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+
+function Home() {
+  const { data, error, status, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["posts"],
+      queryFn: getComments,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    });
+
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
+
+  return status === "pending" ? (
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <CircularProgress />
+    </Box>
+  ) : status === "error" ? (
+    <Box textAlign="center" mt={4}>
+      <p>Error: {error.message}</p>
+    </Box>
+  ) : (
+    <>
+      <Navbar />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+          mt: 10,
+        }}
+      >
+        {data.pages.map((page) => (
+          <div key={page.currentPage}>
+            {page.data.map((item) => (
+              <Box
+                key={item.id}
+                sx={{
+                  width: "100%",
+                  mt: 5,
+                }}
+              >
+                <Comment {...item} />
+              </Box>
+            ))}
+          </div>
+        ))}
+
+        <Box ref={ref} mt={2}>
+          {isFetchingNextPage && <CircularProgress />}
+        </Box>
+      </Box>
+    </>
   );
 }
 
-export default PostWithComment;
+export default Home;

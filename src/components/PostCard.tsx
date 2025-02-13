@@ -8,6 +8,7 @@ import { postCardDataI } from "../types";
 import VoteButtons from "./VoteButtons";
 import { useState } from "react";
 import CommentBox from "./CommentBox";
+import { timeDiffFromNow } from "../utils/helper";
 export default function PostCard({
   id,
   userId,
@@ -31,12 +32,12 @@ export default function PostCard({
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           <Stack direction="column" spacing={2}>
-            <Stack direction="row" spacing={1}>
-              {primaryTag}
-            </Stack>
             <Typography variant="body1" component="div">
-              {username} {createdAt.toLocaleString()}
+              {primaryTag}
             </Typography>
+            <Stack direction="row" spacing={1}>
+              {username} {timeDiffFromNow(createdAt)}
+            </Stack>
             <Typography variant="body2" component="div">
               {content}
             </Typography>

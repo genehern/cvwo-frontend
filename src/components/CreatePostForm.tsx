@@ -13,7 +13,7 @@ const CreateTextPost: React.FC = () => {
   const handleClick = async () => {
     try {
       await createPost(title, content, primaryTag, secondaryTag);
-      //navigate("/");
+      navigate("/");
 
       window.alert("Posted Succesfully");
     } catch {
