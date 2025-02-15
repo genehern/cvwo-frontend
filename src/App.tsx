@@ -6,21 +6,25 @@ import CreatePost from "./pages/CreatePost";
 import PostWithComment from "./pages/PostWithComment.tsx";
 import { AuthProvider } from "./utils/AuthContext.tsx";
 import { AlertProvider } from "./utils/AlertContext.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <QueryClientProvider client={queryClient}>
         <AlertProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/createPost" element={<CreatePost />} />
-            <Route path="/post/:postHeader" element={<PostWithComment />} />
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/posts/createPost" element={<CreatePost />} />
+              <Route path="/posts/:id" element={<PostWithComment />} />
+            </Routes>
+          </AuthProvider>
         </AlertProvider>
-      </AuthProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 }

@@ -57,7 +57,7 @@ export const fetchPosts = async (
   try {
     const res = await apiClient.get(apiLink);
     const posts: postCardDataI[] = res.data;
-
+    console.log(posts);
     return {
       data: posts,
       currentPage: pageParam,
@@ -85,14 +85,19 @@ export const postComment = async (
   }
 };
 
-export const postPostVote = async (postId: number) => {
+export const postPostVote = async (
+  postId: number,
+  upvote: boolean,
+  downvote: boolean
+) => {
   const apiLink: string = `protected/votes/postVote`;
   try {
     await apiClient.post(apiLink, {
       post_id: postId,
-      upvote: true,
-      downvote: false,
+      upvote: upvote,
+      downvote: downvote,
     });
+    console.log(postId, upvote, downvote);
   } catch (error) {
     throw new Error("Failed to fetch posts.");
   }
@@ -108,7 +113,8 @@ export const postCommentVote = async (commentId: number, upvote: boolean) => {
 };
 
 export const getComments = async (
-  context: QueryFunctionContext<string[], number>
+  context: QueryFunctionContext<string[], number>,
+  postId: number
 ): Promise<{
   data: CommentI[];
   currentPage: number;
@@ -116,12 +122,14 @@ export const getComments = async (
 }> => {
   const LIMIT = 10;
   const pageParam = context.pageParam ?? 1;
-  const apiLink: string = `/public/posts?pageNum=${pageParam}&limitNum=${LIMIT}`;
+  const apiLink: string = `/public/comments?postId=${postId}&pageNum=${pageParam}&limitNum=${LIMIT}`;
 
   try {
     const res = await apiClient.get(apiLink);
     const comments: CommentI[] = res.data;
-
+    if (comments == null) {
+      return { data: [], currentPage: pageParam, nextPage: null };
+    }
     return {
       data: comments,
       currentPage: pageParam,

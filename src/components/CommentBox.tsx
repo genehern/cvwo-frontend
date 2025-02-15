@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TextField, InputAdornment, Button, IconButton } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import { postComment } from "../utils/api";
 
 function CommentBox({
@@ -13,7 +14,9 @@ function CommentBox({
   parentCommentId: number | null;
 }) {
   const [inputValue, setInputValue] = useState<string>("");
-
+  const queryClient = useQueryClient();
+  const location = useLocation();
+  const id = location.state;
   return (
     <div>
       <TextField
@@ -44,8 +47,10 @@ function CommentBox({
                 onClick={() => {
                   postComment(postId, parentCommentId, inputValue);
                   setIsBoxOpen(false);
+                  queryClient.refetchQueries({
+                    queryKey: ["posts", `comments${id}`],
+                  });
                   setInputValue("");
-                  window.alert("success");
                 }}
                 endIcon={<></>}
               >

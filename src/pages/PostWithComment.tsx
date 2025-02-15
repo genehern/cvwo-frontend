@@ -5,17 +5,25 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getComments } from "../utils/api";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import { useParams, useLocation } from "react-router-dom";
+import PostCard from "../components/PostCard";
+import { postCardDataI } from "../types";
 
-function Home() {
+function PostWithComment() {
+  let { id } = useParams();
+  const postId = Number(id);
+  const location = useLocation();
+  const postData = location.state;
   const { data, error, status, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["posts"],
-      queryFn: getComments,
+      queryKey: [`comments${postId}`],
+      queryFn: (context) => getComments(context, postId),
       initialPageParam: 0,
       getNextPageParam: (lastPage) => lastPage.nextPage,
     });
 
   const { ref, inView } = useInView();
+  console.log(postData);
 
   useEffect(() => {
     if (inView) {
@@ -48,21 +56,23 @@ function Home() {
           mt: 10,
         }}
       >
-        {data.pages.map((page) => (
-          <div key={page.currentPage}>
-            {page.data.map((item) => (
-              <Box
-                key={item.id}
-                sx={{
-                  width: "100%",
-                  mt: 5,
-                }}
-              >
-                <Comment {...item} />
-              </Box>
-            ))}
-          </div>
-        ))}
+        <PostCard {...postData} enableReadMore={false} />
+        {data.pages !== null &&
+          data.pages.map((page) => (
+            <div key={page.currentPage}>
+              {page.data.map((item) => (
+                <Box
+                  key={item.id}
+                  sx={{
+                    width: "100%",
+                    mt: 5,
+                  }}
+                >
+                  <Comment {...item} />
+                </Box>
+              ))}
+            </div>
+          ))}
 
         <Box ref={ref} mt={2}>
           {isFetchingNextPage && <CircularProgress />}
@@ -72,4 +82,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default PostWithComment;

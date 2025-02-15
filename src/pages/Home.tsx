@@ -16,7 +16,7 @@ function Home() {
     });
 
   const { ref, inView } = useInView();
-
+  console.log(data);
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -58,7 +58,7 @@ function Home() {
                   mt: 5,
                 }}
               >
-                <PostCard {...item} />
+                <PostCard {...item} enableReadMore={true} />
               </Box>
             ))}
           </div>

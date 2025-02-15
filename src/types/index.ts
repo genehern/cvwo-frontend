@@ -26,4 +26,5 @@ export interface postCardDataI {
   comments: CommentI[]; // Array of CommentDTO
   upvotes: number;
   downvotes: number;
+  enableReadMore?: boolean;
 }
