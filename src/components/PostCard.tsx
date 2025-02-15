@@ -9,6 +9,7 @@ import VoteButtons from "./VoteButtons";
 import { useState } from "react";
 import CommentBox from "./CommentBox";
 import { timeDiffFromNow } from "../utils/helper";
+import { Link } from "react-router-dom";
 export default function PostCard({
   id,
   userId,
@@ -22,6 +23,7 @@ export default function PostCard({
   comments,
   upvotes,
   downvotes,
+  enableReadMore,
 }: postCardDataI) {
   const [isBoxOpen, setIsBoxOpen] = useState<boolean>(false);
   return (
@@ -45,7 +47,25 @@ export default function PostCard({
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Read More</Button>
+        <Link
+          to={`/posts/${id}`}
+          state={{
+            id,
+            userId,
+            username,
+            title,
+            content,
+            createdAt,
+            primaryTag,
+            isUpvoted,
+            isDownvoted,
+            comments,
+            upvotes,
+            downvotes,
+          }}
+        >
+          {enableReadMore && <Button size="small">Read More</Button>}
+        </Link>
         <VoteButtons
           initialIsUpvote={isUpvoted}
           initialDownvotes={downvotes}

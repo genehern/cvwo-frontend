@@ -1,5 +1,6 @@
 import { useContext, createContext, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "./AlertContext";
 import axios from "axios";
 interface AuthContextType {
   loginAction: (data: credentials) => Promise<void>;
@@ -21,6 +22,7 @@ const backendUrl: string | undefined = process.env.REACT_APP_BACKEND_URL;
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
   const loginAction = async (credentials: {
     username: string;
     password: string;
@@ -29,10 +31,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await axios.post(apiLink, credentials);
       localStorage.setItem("username", credentials.username);
-      alert("Logged in successfuly");
+      showAlert("Log in successful", "success");
       navigate("/");
     } catch (error: any) {
-      alert(error.message);
+      showAlert(error.response.data.error, "error");
     }
   };
 
@@ -44,11 +46,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await axios.post(apiLink, credentials);
       localStorage.setItem("username", credentials.username);
-      //Cookies.set("jwt", response.data, {expires: 7});
-      alert("User created successfully");
+      showAlert("Log in successful", "success");
       navigate("/");
     } catch (error: any) {
-      alert(error.messsage);
+      showAlert(error.response.data.error, "error");
     }
   };
 

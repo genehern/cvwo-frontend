@@ -67,20 +67,17 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
   const [state, dispatch] = useReducer(voteReducer, initialState);
 
   const handleUpvote = (postOrComment: string) => {
-    if (isUpvote) {
-      return;
-    }
     if (localStorage.getItem("username") == null) {
       alert("Log in to upvote!");
       return;
     }
     try {
+      dispatch({ type: "UPVOTE" });
       if (postOrComment === "post") {
-        postPostVote(id);
+        postPostVote(id, !state.isUpvote, false);
       } else {
         postCommentVote(id, false);
       }
-      dispatch({ type: "UPVOTE" });
     } catch {
       window.alert("Failed");
     }
@@ -88,19 +85,16 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
 
   const handleDownvote = (postOrComment: string) => {
     try {
-      if (isDownVote) {
-        return;
-      }
       if (localStorage.getItem("username") == null) {
-        alert("Log in to upvote!");
+        alert("Log in to downvote!");
         return;
       }
+      dispatch({ type: "DOWNVOTE" });
       if (postOrComment === "post") {
-        postPostVote(id);
+        postPostVote(id, false, !state.isDownVote);
       } else {
         postCommentVote(id, false);
       }
-      dispatch({ type: "DOWNVOTE" });
     } catch {
       window.alert("Failed");
     }
@@ -131,7 +125,6 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
           </Typography>
         </Box>
 
-        {/* Downvote Button */}
         <Box display="flex" flexDirection="column" alignItems="center">
           <Tooltip title="Downvote">
             <IconButton

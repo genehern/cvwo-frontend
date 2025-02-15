@@ -92,7 +92,7 @@ const DesktopMenu = ({
           icon={<AddIcon />}
           label="Create Post"
           component={Link}
-          to="/createPost"
+          to="/posts/createPost"
           clickable
           sx={{
             backgroundColor: "#FFFFFF",

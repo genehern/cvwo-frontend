@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CommentI } from "../types";
+import { timeDiffFromNow } from "../utils/helper";
 import {
   Box,
   Typography,
@@ -43,7 +44,7 @@ function Comment({
           </Typography>
         </Box>
         <Typography variant="caption" color="text.secondary">
-          {createdAt.toLocaleString()}
+          {timeDiffFromNow(createdAt)}
         </Typography>
       </Box>
 
@@ -68,7 +69,7 @@ function Comment({
         />
       )}
       {/* Nested replies */}
-      {replies.length > 0 && (
+      {replies !== null && replies.length > 0 && (
         <Box sx={{ marginLeft: 4, marginTop: 2 }}>
           {replies.map((reply) => (
             <Comment key={reply.id} {...reply} />
