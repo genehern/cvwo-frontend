@@ -125,7 +125,6 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
           </Typography>
         </Box>
 
-        {/* Downvote Button */}
         <Box display="flex" flexDirection="column" alignItems="center">
           <Tooltip title="Downvote">
             <IconButton

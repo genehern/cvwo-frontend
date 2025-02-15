@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 import PostCard from "../components/PostCard";
 import { Box, CircularProgress } from "@mui/material";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { QueryCache, useInfiniteQuery } from "@tanstack/react-query";
 import { fetchPosts } from "../utils/api";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -14,9 +14,8 @@ function Home() {
       initialPageParam: 0,
       getNextPageParam: (lastPage) => lastPage.nextPage,
     });
-
+  
   const { ref, inView } = useInView();
-  console.log(data);
   useEffect(() => {
     if (inView) {
       fetchNextPage();

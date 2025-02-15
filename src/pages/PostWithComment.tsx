@@ -23,7 +23,7 @@ function PostWithComment() {
     });
 
   const { ref, inView } = useInView();
-  console.log(postData);
+
 
   useEffect(() => {
     if (inView) {
@@ -68,7 +68,7 @@ function PostWithComment() {
                     mt: 5,
                   }}
                 >
-                  <Comment {...item} />
+                  <Comment {...item}/>
                 </Box>
               ))}
             </div>

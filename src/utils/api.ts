@@ -38,9 +38,7 @@ export const createPost = async (
       primary_tag: primaryTag,
       secondary_tag: secondaryTag,
     });
-  } catch {
-    console.log("Error posting, check your connection again.");
-  }
+  } catch {}
 };
 
 export const fetchPosts = async (
